@@ -1,0 +1,6 @@
+CREATE TABLE todo(
+    id INT NOT NULL AUTO_INCREMENT,
+    description VARCHAR(255) NOT NULL,
+    completed BOOLEAN NOT NULL,
+    PRIMARY KEY(id)
+);
