@@ -1,15 +1,13 @@
 package com.thoughtworks.todo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "todo")
 public class Todo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "description")
@@ -24,6 +22,16 @@ public class Todo {
     public Todo(String description, boolean isCompleted) {
         this.description = description;
         this.isCompleted = isCompleted;
+    }
+
+    public Todo(int id, String description, boolean isCompleted) {
+        this.id = id;
+        this.description = description;
+        this.isCompleted = isCompleted;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getDescription() {
