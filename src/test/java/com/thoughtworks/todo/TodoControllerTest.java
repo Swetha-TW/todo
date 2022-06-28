@@ -52,7 +52,7 @@ public class TodoControllerTest {
         Todo todo = new Todo("Learn Spring Boot", false);
         ObjectMapper objectMapper = new ObjectMapper();
         String todoString = objectMapper.writeValueAsString(todo);
-        Mockito.when(todoService.createTodo(any(Todo.class))).thenReturn(todo);
+        Mockito.when(todoService.create(any(Todo.class))).thenReturn(todo);
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders
                 .post("/todo")

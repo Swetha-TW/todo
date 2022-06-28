@@ -3,7 +3,6 @@ package com.thoughtworks.todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,7 +19,7 @@ public class TodoService {
         return (List<Todo>) todoRepository.findAll();
     }
 
-    public Todo createTodo(Todo todo) {
+    public Todo create(Todo todo) {
         return new Todo();
     }
 }

@@ -1,7 +1,6 @@
 package com.thoughtworks.todo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +26,6 @@ public class TodoController {
 
     @PostMapping("/todo")
     public ResponseEntity<Todo> createTodo(@RequestBody Todo todo){
-        return new ResponseEntity<>(todoService.createTodo(todo), CREATED);
+        return new ResponseEntity<>(todoService.create(todo), CREATED);
     }
 }
