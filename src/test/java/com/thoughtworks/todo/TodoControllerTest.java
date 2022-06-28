@@ -1,5 +1,6 @@
 package com.thoughtworks.todo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -9,12 +10,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -41,5 +44,26 @@ public class TodoControllerTest {
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
                         jsonPath("$", hasSize(2)));
+    }
+
+
+    @Test
+    void shouldReturnCreatedStatusTodoWhenTodoIsCreated() throws Exception {
+        Todo todo = new Todo("Learn Spring Boot", false);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String todoString = objectMapper.writeValueAsString(todo);
+        Mockito.when(todoService.createTodo(any(Todo.class))).thenReturn(todo);
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .post("/todo")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(todoString));
+
+        result.andExpectAll(
+                status().isCreated(),
+                jsonPath("$.description").value(todo.getDescription()),
+                jsonPath("$.completed").value(todo.isCompleted()));
+
+
     }
 }

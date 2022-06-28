@@ -19,4 +19,8 @@ public class TodoService {
     public List<Todo> findAll() {
         return (List<Todo>) todoRepository.findAll();
     }
+
+    public Todo createTodo(Todo todo) {
+        return new Todo();
+    }
 }
