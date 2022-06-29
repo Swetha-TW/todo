@@ -42,4 +42,19 @@ public class TodoServiceTest {
 
         assertEquals(1.0, todoRepository.count());
     }
+
+    @Test
+    void shouldSaveUpdatedTodoWhenUpdateIsCalled() {
+        Todo savedTodo = new Todo("Implement Put method", false);
+        TodoService todoService = new TodoService(todoRepository);
+        todoRepository.save(savedTodo);
+        Todo expectedTodo = new Todo(savedTodo.getId(), "Implement Put method TDD", false);
+
+        Todo updatedTodo = todoService.update(savedTodo.getId(), expectedTodo);
+
+        assertEquals(savedTodo.getId(),updatedTodo.getId());
+        assertEquals(expectedTodo.getDescription(), updatedTodo.getDescription());
+        assertEquals(expectedTodo.isCompleted(), updatedTodo.isCompleted());
+
+    }
 }
