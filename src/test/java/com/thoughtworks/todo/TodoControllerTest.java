@@ -18,6 +18,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -48,7 +50,7 @@ public class TodoControllerTest {
 
 
     @Test
-    void shouldReturnCreatedStatusTodoWhenTodoIsCreated() throws Exception {
+    void shouldReturnCreatedStatusWhenTodoIsCreated() throws Exception {
         Todo todo = new Todo("Learn Spring Boot", false);
         ObjectMapper objectMapper = new ObjectMapper();
         String todoString = objectMapper.writeValueAsString(todo);
@@ -63,7 +65,29 @@ public class TodoControllerTest {
                 status().isCreated(),
                 jsonPath("$.description").value(todo.getDescription()),
                 jsonPath("$.completed").value(todo.isCompleted()));
+    }
 
+    @Test
+    void shouldReturnCreatedStatusWhenTodoIsUpdated() throws Exception {
+        Todo todo = new Todo("Learn Spring Boot", false);
+        todoService.create(todo);
+        Todo updatedTodo = new Todo("Learn Spring Boot TDD", false);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String updateTodoString = objectMapper.writeValueAsString(updatedTodo);
+        System.out.println(updateTodoString);
+        Mockito.when(todoService.update(anyInt(), any(Todo.class))).thenReturn(updatedTodo);
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .put("/todo/" + 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updateTodoString));
+
+        result.andDo(print()).andExpectAll(
+                status().isCreated(),
+                jsonPath("$.description").value(updatedTodo.getDescription()),
+                jsonPath("$.completed").value(updatedTodo.isCompleted())
+        );
 
     }
+
 }
