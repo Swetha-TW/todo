@@ -19,6 +19,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -90,4 +91,16 @@ public class TodoControllerTest {
 
     }
 
+    @Test
+    void shouldReturnSuccessWhenTodoIsDeleted() throws Exception {
+        Todo todo = new Todo(1, "Start Learning React", false);
+        todoService.create(todo);
+        doNothing().when(todoService).delete(todo.getId());
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .delete("/todo/" + 1)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        result.andDo(print()).andExpect(status().isOk());
+    }
 }
