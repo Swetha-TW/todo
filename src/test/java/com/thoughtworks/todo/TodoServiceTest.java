@@ -57,4 +57,17 @@ public class TodoServiceTest {
         assertEquals(expectedTodo.isCompleted(), updatedTodo.isCompleted());
 
     }
+
+    @Test
+    void shouldDeleteTodoWhenTodoWithGivenIdExists() {
+        Todo learnSpringBootTodo = new Todo("Learn Spring Boot", false);
+        Todo learnReactTodo = new Todo("Learn React", false);
+        TodoService todoService = new TodoService(todoRepository);
+        todoService.create(learnSpringBootTodo);
+        todoService.create(learnReactTodo);
+
+        todoService.delete(learnSpringBootTodo.getId());
+
+        assertEquals(1.0, todoRepository.count());
+    }
 }

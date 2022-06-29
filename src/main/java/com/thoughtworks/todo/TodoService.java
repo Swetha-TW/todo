@@ -33,5 +33,8 @@ public class TodoService {
     }
 
     public void delete(int id) {
+        if(todoRepository.existsById(id)){
+            todoRepository.deleteById(id);
+        }
     }
 }
