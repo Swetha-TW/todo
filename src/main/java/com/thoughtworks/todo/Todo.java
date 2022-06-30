@@ -1,6 +1,7 @@
 package com.thoughtworks.todo;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "todo")
@@ -11,6 +12,7 @@ public class Todo {
     private int id;
 
     @Column(name = "description")
+    @NotBlank(message = "Description cannot be blank")
     private String description;
 
     @Column(name = "completed")

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -23,12 +24,12 @@ public class TodoController {
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<Todo> createTodo(@RequestBody Todo todo){
+    public ResponseEntity<Todo> createTodo(@Valid @RequestBody Todo todo){
         return new ResponseEntity<>(todoService.create(todo), CREATED);
     }
 
     @PutMapping("/todo/{id}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable int id, @RequestBody Todo todo) throws TodoNotFoundException {
+    public ResponseEntity<Todo> updateTodo(@PathVariable int id, @Valid @RequestBody Todo todo) throws TodoNotFoundException {
         return new ResponseEntity<>(todoService.update(id,todo), CREATED);
     }
 

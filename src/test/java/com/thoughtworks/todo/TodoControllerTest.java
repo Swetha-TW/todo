@@ -137,4 +137,18 @@ public class TodoControllerTest {
         );
     }
 
+    @Test
+    void shouldReturnBadRequestStatusWhenTodoDescriptionIsBlank() throws Exception {
+        String todo = "{\"description\": \"\", \"completed\" : \"false\"}";
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .post("/todo")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(todo));
+
+        result.andDo(print()).andExpectAll(
+                status().isBadRequest(),
+                jsonPath("$.description").value("Description cannot be blank")
+        );
+    }
 }
