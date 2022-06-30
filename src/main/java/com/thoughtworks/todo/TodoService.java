@@ -1,10 +1,10 @@
 package com.thoughtworks.todo;
 
+import com.thoughtworks.todo.exception.TodoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoService {
@@ -24,12 +24,13 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    public Todo update(int id, Todo todo) {
+    public Todo update(int id, Todo todo) throws TodoNotFoundException {
         if (todoRepository.existsById(id)) {
             return todoRepository.save(todo);
         }
-        else
-            return new Todo();
+        else {
+            throw new TodoNotFoundException("Todo not found with id " + id);
+        }
     }
 
     public void delete(int id) {

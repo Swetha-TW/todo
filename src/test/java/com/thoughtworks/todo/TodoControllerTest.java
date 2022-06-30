@@ -1,6 +1,7 @@
 package com.thoughtworks.todo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.todo.exception.TodoNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -102,5 +103,23 @@ public class TodoControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         result.andDo(print()).andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturnNotFoundStatusWhenTodoDoesNotExist() throws Exception {
+        Todo todo = new Todo(1, "Start Learning React", false);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String todoString = objectMapper.writeValueAsString(todo);
+        todoService.create(todo);
+        Mockito.when(todoService.update(anyInt(), any(Todo.class))).thenThrow(new TodoNotFoundException("Todo not found with id " + 2));
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .put("/todo/" + 2)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(todoString));
+
+        result.andDo(print()).andExpectAll(
+                status().isNotFound(),
+                jsonPath("$.errorMessage").value("Todo not found with id " + 2));
     }
 }

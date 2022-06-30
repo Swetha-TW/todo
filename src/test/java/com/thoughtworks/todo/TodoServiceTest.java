@@ -1,5 +1,6 @@
 package com.thoughtworks.todo;
 
+import com.thoughtworks.todo.exception.TodoNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class TodoServiceTest {
@@ -44,7 +46,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void shouldSaveUpdatedTodoWhenUpdateIsCalled() {
+    void shouldSaveUpdatedTodoWhenUpdateIsCalled() throws TodoNotFoundException {
         Todo savedTodo = new Todo("Implement Put method", false);
         TodoService todoService = new TodoService(todoRepository);
         todoRepository.save(savedTodo);
@@ -52,7 +54,7 @@ public class TodoServiceTest {
 
         Todo updatedTodo = todoService.update(savedTodo.getId(), expectedTodo);
 
-        assertEquals(savedTodo.getId(),updatedTodo.getId());
+        assertEquals(savedTodo.getId(), updatedTodo.getId());
         assertEquals(expectedTodo.getDescription(), updatedTodo.getDescription());
         assertEquals(expectedTodo.isCompleted(), updatedTodo.isCompleted());
 
@@ -69,5 +71,16 @@ public class TodoServiceTest {
         todoService.delete(learnSpringBootTodo.getId());
 
         assertEquals(1.0, todoRepository.count());
+    }
+
+    @Test
+    void shouldThrowTodoNotFoundExceptionWhenTodoWithGivenIdDoesNotExists() throws TodoNotFoundException {
+        Todo learnReactTodo = new Todo("Learn React", false);
+        TodoService todoService = new TodoService(todoRepository);
+        todoService.create(learnReactTodo);
+
+        assertThrows(TodoNotFoundException.class,() -> {
+            todoService.update(learnReactTodo.getId() + 1, learnReactTodo);
+        });
     }
 }
