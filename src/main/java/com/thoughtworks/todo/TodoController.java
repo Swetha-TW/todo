@@ -33,7 +33,7 @@ public class TodoController {
     }
 
     @DeleteMapping("/todo/{id}")
-    public ResponseEntity<Todo> deleteTodo(@PathVariable int id)
+    public ResponseEntity<Todo> deleteTodo(@PathVariable int id) throws TodoNotFoundException
     {
         todoService.delete(id);
         return new ResponseEntity<>(OK);

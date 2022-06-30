@@ -61,7 +61,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void shouldDeleteTodoWhenTodoWithGivenIdExists() {
+    void shouldDeleteTodoWhenTodoWithGivenIdExists() throws TodoNotFoundException {
         Todo learnSpringBootTodo = new Todo("Learn Spring Boot", false);
         Todo learnReactTodo = new Todo("Learn React", false);
         TodoService todoService = new TodoService(todoRepository);
@@ -74,13 +74,22 @@ public class TodoServiceTest {
     }
 
     @Test
-    void shouldThrowTodoNotFoundExceptionWhenTodoWithGivenIdDoesNotExists() throws TodoNotFoundException {
+    void shouldThrowTodoNotFoundExceptionWhenUpdateTodoIsCalledOnTodoThatDoesNotExist() throws TodoNotFoundException {
         Todo learnReactTodo = new Todo("Learn React", false);
         TodoService todoService = new TodoService(todoRepository);
         todoService.create(learnReactTodo);
 
-        assertThrows(TodoNotFoundException.class,() -> {
+        assertThrows(TodoNotFoundException.class, () -> {
             todoService.update(learnReactTodo.getId() + 1, learnReactTodo);
+        });
+    }
+
+    @Test
+    void shouldThrowTodoNotFoundExceptionWhenDeleteTodoIsCalledOnTodoThatDoesNotExist() {
+        TodoService todoService = new TodoService(todoRepository);
+
+        assertThrows(TodoNotFoundException.class, () -> {
+            todoService.delete(1);
         });
     }
 }

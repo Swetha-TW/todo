@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -106,7 +107,7 @@ public class TodoControllerTest {
     }
 
     @Test
-    void shouldReturnNotFoundStatusWhenTodoDoesNotExist() throws Exception {
+    void shouldReturnNotFoundStatusWhenUpdatingTodoThatDoesNotExist() throws Exception {
         Todo todo = new Todo(1, "Start Learning React", false);
         ObjectMapper objectMapper = new ObjectMapper();
         String todoString = objectMapper.writeValueAsString(todo);
@@ -122,4 +123,18 @@ public class TodoControllerTest {
                 status().isNotFound(),
                 jsonPath("$.errorMessage").value("Todo not found with id " + 2));
     }
+
+    @Test
+    void shouldReturnNotFoundStatusWhenDeletingTodoThatDoesNotExist() throws Exception {
+        doThrow(new TodoNotFoundException("Todo not found with id " + 1)).when(todoService).delete(1);
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders
+                .delete("/todo/" + 1));
+
+        result.andDo(print()).andExpectAll(
+                status().isNotFound(),
+                jsonPath("$.errorMessage").value("Todo not found with id " + 1)
+        );
+    }
+
 }

@@ -33,9 +33,12 @@ public class TodoService {
         }
     }
 
-    public void delete(int id) {
+    public void delete(int id) throws TodoNotFoundException {
         if(todoRepository.existsById(id)){
             todoRepository.deleteById(id);
+        }
+        else{
+            throw new TodoNotFoundException("Todo not found with id "+ id);
         }
     }
 }
